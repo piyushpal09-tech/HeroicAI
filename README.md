@@ -41,7 +41,7 @@ server/
    - `client/.env.example` to `client/.env`
    - `server/.env.example` to `server/.env`
 3. Fill the required values:
-   - Server: `MONGO_URI`, `REDIS_URL`, `POSTGRES_URL`, `JWT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `ANTHROPIC_API_KEY`, `EMAILJS_SERVICE_ID`
+   - Server: `PORT`, `NODE_ENV`, `CLIENT_URL`, `ADDITIONAL_ALLOWED_ORIGINS`, `MONGO_URI`, `REDIS_URL`, `POSTGRES_URL`, `JWT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `ANTHROPIC_API_KEY`, `EMAILJS_SERVICE_ID`
    - Client: `VITE_API_URL`, `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`, `VITE_EMAILJS_PUBLIC_KEY`
 4. Run the apps:
    ```bash
@@ -71,6 +71,16 @@ server/
 - `client/vercel.json` configures SPA fallback for Vercel.
 - `server/railway.toml` configures Railway deployment.
 - `.github/workflows/deploy.yml` builds the client and verifies the server on pushes to `main`, then deploys when the necessary secrets are configured.
+- `npm run deploy:check` reports which provider and runtime variables are still missing before deployment.
+
+## Deployment Checklist
+
+1. Create a Vercel project pointing at the `client` directory.
+2. Create a Railway service pointing at the `server` directory.
+3. Set production environment variables in Vercel and Railway.
+4. Update `CLIENT_URL` in Railway to your deployed Vercel domain.
+5. Update `VITE_API_URL` in Vercel to your deployed Railway API URL.
+6. Add GitHub Action secrets for Vercel and Railway if you want push-to-deploy automation.
 
 ## Live URLs
 

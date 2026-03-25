@@ -15,7 +15,19 @@ dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 5000
 
-const allowedOrigins = ['http://localhost:5173', 'https://heroicai.vercel.app']
+const configuredOrigins = [
+  process.env.CLIENT_URL,
+  process.env.VERCEL_PROJECT_PRODUCTION_URL,
+  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
+  ...(process.env.ADDITIONAL_ALLOWED_ORIGINS || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+]
+
+const allowedOrigins = Array.from(
+  new Set(['http://localhost:5173', 'https://heroicai.vercel.app', ...configuredOrigins].filter(Boolean)),
+)
 
 app.use(
   cors({
