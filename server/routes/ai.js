@@ -4,8 +4,7 @@ const authMiddleware = require('../middleware/authMiddleware')
 const rateLimiter = require('../middleware/rateLimiter')
 const { validToolNames, getToolPrompt } = require('../utils/toolPrompts')
 const { generateMockResponse } = require('../utils/mockAi')
-const { recordToolHistory, findUserById } = require('../utils/userRepo')
-const { cacheSession, sanitizeUser } = require('../utils/auth')
+const { recordToolHistory } = require('../utils/userRepo')
 
 const router = express.Router()
 
@@ -75,20 +74,11 @@ router.post('/:toolName', authMiddleware, rateLimiter, async (req, res) => {
     }
 
     await streamText(res, output)
-    const updatedUser = await recordToolHistory(req.userId, {
+    await recordToolHistory(req.userId, {
       tool: toolName,
       input: req.body,
       output,
     })
-
-    if (updatedUser && req.token) {
-      await cacheSession(req.token, sanitizeUser(updatedUser))
-    } else if (req.token) {
-      const freshUser = await findUserById(req.userId)
-      if (freshUser) {
-        await cacheSession(req.token, sanitizeUser(freshUser))
-      }
-    }
 
     sendEvent(res, {
       type: 'complete',

@@ -49,8 +49,8 @@ const App = () => {
           </Route>
 
           <Route element={<AuthLayout />}>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/login/*" element={<LoginPage />} />
+            <Route path="/signup/*" element={<SignupPage />} />
           </Route>
 
           <Route

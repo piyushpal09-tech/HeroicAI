@@ -6,7 +6,6 @@ const helmet = require('helmet')
 const morgan = require('morgan')
 const { connectDB } = require('./config/db')
 const { getPostgresPool } = require('./config/postgres')
-const authRoutes = require('./routes/auth')
 const aiRoutes = require('./routes/ai')
 const userRoutes = require('./routes/user')
 
@@ -61,7 +60,6 @@ app.get('/api/health', async (req, res) => {
   })
 })
 
-app.use('/api/auth', authRoutes)
 app.use('/api/ai', aiRoutes)
 app.use('/api/user', userRoutes)
 

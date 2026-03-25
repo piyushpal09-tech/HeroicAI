@@ -1,51 +1,37 @@
-const jwt = require('jsonwebtoken')
-const { cacheStore } = require('../config/redis')
-const { findUserById } = require('../utils/userRepo')
-const { getSessionKey, sanitizeUser } = require('../utils/auth')
+const { clerkClient, createClerkClient } = require('@clerk/express')
 
-const getTokenFromRequest = (req) => {
-  const authHeader = req.headers.authorization || ''
-
-  if (req.cookies?.heroicai_token) {
-    return req.cookies.heroicai_token
-  }
-
-  if (authHeader.startsWith('Bearer ')) {
-    return authHeader.replace('Bearer ', '')
-  }
-
-  return null
-}
-
+// Verify the Clerk session token from the Authorization header or cookie
 const authMiddleware = async (req, res, next) => {
   try {
-    const token = getTokenFromRequest(req)
+    // Support both Bearer token and Clerk session cookie
+    const authHeader = req.headers.authorization || ''
+    const sessionToken =
+      (authHeader.startsWith('Bearer ') ? authHeader.replace('Bearer ', '') : null) ||
+      req.cookies?.['__session'] ||
+      req.cookies?.['heroicai_token']
 
-    if (!token) {
+    if (!sessionToken) {
       return res.status(401).json({ message: 'Authentication required.' })
     }
 
-    const cachedUser = await cacheStore.get(getSessionKey(token))
+    // Verify the JWT with Clerk's SDK
+    const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY })
+    const payload = await clerk.verifyToken(sessionToken)
 
-    if (cachedUser) {
-      req.token = token
-      req.user = JSON.parse(cachedUser)
-      req.userId = req.user._id
-      return next()
+    if (!payload?.sub) {
+      return res.status(401).json({ message: 'Invalid or expired session.' })
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'heroicai-dev-secret')
-    const user = await findUserById(decoded.userId)
+    // Attach Clerk's userId (sub) as req.userId for route handlers
+    req.userId = payload.sub
+    req.token = sessionToken
 
-    if (!user) {
-      return res.status(401).json({ message: 'User session is invalid.' })
+    // Optionally attach minimal user info from the token claims
+    req.user = {
+      _id: payload.sub,
+      name: payload.name || null,
+      email: payload.email || null,
     }
-
-    const safeUser = sanitizeUser(user)
-    req.token = token
-    req.user = safeUser
-    req.userId = safeUser._id
-    await cacheStore.set(getSessionKey(token), JSON.stringify(safeUser), 15 * 60)
 
     return next()
   } catch (error) {

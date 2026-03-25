@@ -1,12 +1,12 @@
 import { Navigate, useLocation } from 'react-router-dom'
+import { useAuth } from '@clerk/react'
 import Skeleton from '@/components/ui/Skeleton.jsx'
-import { useAuth } from '@/hooks/useAuth.js'
 
 const AuthGuard = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuth()
+  const { isLoaded, isSignedIn } = useAuth()
   const location = useLocation()
 
-  if (isLoading) {
+  if (!isLoaded) {
     return (
       <div className="space-y-4">
         <Skeleton className="h-12 w-40" />
@@ -15,7 +15,7 @@ const AuthGuard = ({ children }) => {
     )
   }
 
-  if (!isAuthenticated) {
+  if (!isSignedIn) {
     return <Navigate to="/login" replace state={{ from: location }} />
   }
 

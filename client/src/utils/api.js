@@ -7,23 +7,29 @@ export const api = axios.create({
   withCredentials: true,
 })
 
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('heroicai_token')
+// Token getter — set by AuthContext once Clerk is loaded
+let _getToken = null
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+export const registerTokenGetter = (fn) => {
+  _getToken = fn
+}
+
+api.interceptors.request.use(async (config) => {
+  if (_getToken) {
+    try {
+      const token = await _getToken()
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
+    } catch {
+      // If Clerk isn't ready yet, proceed without token
+    }
   }
 
   return config
 })
 
-export const setStoredToken = (token) => {
-  if (token) {
-    localStorage.setItem('heroicai_token', token)
-    return
-  }
-
-  localStorage.removeItem('heroicai_token')
-}
+// Legacy no-op exported for backward compatibility
+export const setStoredToken = () => {}
 
 export default api
