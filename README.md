@@ -41,7 +41,7 @@ server/
    - `client/.env.example` to `client/.env`
    - `server/.env.example` to `server/.env`
 3. Fill the required values:
-   - Server: `PORT`, `NODE_ENV`, `CLIENT_URL`, `ADDITIONAL_ALLOWED_ORIGINS`, `MONGO_URI`, `REDIS_URL`, `POSTGRES_URL`, `JWT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `ANTHROPIC_API_KEY`, `EMAILJS_SERVICE_ID`
+   - Server: `PORT`, `NODE_ENV`, `CLIENT_URL`, `ADDITIONAL_ALLOWED_ORIGINS`, `MONGO_URI`, `REDIS_URL`, `POSTGRES_URL`, `POSTGRES_SSL`, `JWT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `ANTHROPIC_API_KEY`, `EMAILJS_SERVICE_ID`
    - Client: `VITE_API_URL`, `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`, `VITE_EMAILJS_PUBLIC_KEY`
 4. Run the apps:
    ```bash
@@ -91,4 +91,6 @@ server/
 
 - The live frontend is connected to the live Railway API.
 - CORS is configured for `https://heroicai-web.vercel.app`.
-- The current backend deployment is running without MongoDB, Redis, PostgreSQL, Anthropic, Google OAuth, and EmailJS credentials, so it falls back to in-memory auth/history and mock AI responses until those provider secrets are added.
+- MongoDB, Redis, and PostgreSQL are configured in Railway and the production API health check reports them as active.
+- Production auth now runs against MongoDB-backed users with Redis-backed session caching.
+- Anthropic, Google OAuth, and EmailJS provider secrets are still not configured, so AI responses remain in mock mode and the OAuth/contact integrations are not fully activated yet.

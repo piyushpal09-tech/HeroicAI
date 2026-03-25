@@ -2,7 +2,7 @@ const Redis = require('ioredis')
 
 const memoryStore = new Map()
 let redisClient = null
-let attemptedConnection = false
+let connectionPromise = null
 
 const readMemory = (key) => {
   const entry = memoryStore.get(key)
@@ -26,35 +26,83 @@ const writeMemory = (key, value, ttlSeconds) => {
   })
 }
 
+const createRedisClient = () => {
+  const client = new Redis(process.env.REDIS_URL, {
+    lazyConnect: true,
+    maxRetriesPerRequest: 1,
+    enableReadyCheck: true,
+  })
+
+  client.on('error', (error) => {
+    console.error(`Redis error: ${error.message}`)
+  })
+
+  client.on('end', () => {
+    if (redisClient === client) {
+      redisClient = null
+    }
+  })
+
+  return client
+}
+
+const getOrCreateRedisClient = () => {
+  if (!redisClient || ['close', 'end'].includes(redisClient.status)) {
+    redisClient = createRedisClient()
+  }
+
+  return redisClient
+}
+
 const getRedisClient = async () => {
   if (!process.env.REDIS_URL) {
     return null
   }
 
-  if (!redisClient) {
-    redisClient = new Redis(process.env.REDIS_URL, {
-      lazyConnect: true,
-      maxRetriesPerRequest: 1,
-      enableReadyCheck: true,
-    })
+  const client = getOrCreateRedisClient()
 
-    redisClient.on('error', (error) => {
-      console.error(`Redis error: ${error.message}`)
-    })
+  if (client.status === 'ready') {
+    return client
   }
 
-  if (!attemptedConnection) {
-    attemptedConnection = true
-    try {
-      await redisClient.connect()
-      console.log('Redis connected')
-    } catch (error) {
-      console.error(`Redis connection failed: ${error.message}`)
+  if (!connectionPromise) {
+    connectionPromise = (async () => {
+      const activeClient = getOrCreateRedisClient()
+
+      if (activeClient.status === 'ready') {
+        return activeClient
+      }
+
+      if (activeClient.status === 'wait') {
+        await activeClient.connect()
+      }
+
+      if (activeClient.status === 'ready') {
+        console.log('Redis connected')
+        return activeClient
+      }
+
       return null
-    }
+    })()
+      .catch((error) => {
+        console.error(`Redis connection failed: ${error.message}`)
+        if (redisClient && redisClient.status === 'end') {
+          redisClient = null
+        }
+        return null
+      })
+      .finally(() => {
+        connectionPromise = null
+      })
   }
 
-  return redisClient.status === 'ready' ? redisClient : null
+  const connectedClient = await connectionPromise
+
+  if (connectedClient?.status === 'ready') {
+    return connectedClient
+  }
+
+  return null
 }
 
 const cacheStore = {
