@@ -84,5 +84,11 @@ server/
 
 ## Live URLs
 
-- Frontend: set your deployed Vercel URL here
-- Backend: set your deployed Railway URL here
+- Frontend: https://heroicai-web.vercel.app
+- Backend: https://api-production-dc20.up.railway.app
+
+## Current Production Notes
+
+- The live frontend is connected to the live Railway API.
+- CORS is configured for `https://heroicai-web.vercel.app`.
+- The current backend deployment is running without MongoDB, Redis, PostgreSQL, Anthropic, Google OAuth, and EmailJS credentials, so it falls back to in-memory auth/history and mock AI responses until those provider secrets are added.
