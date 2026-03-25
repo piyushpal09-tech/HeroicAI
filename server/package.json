@@ -1,0 +1,36 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "HeroicAI API server",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "build": "node --check index.js && node --check routes/auth.js && node --check routes/ai.js && node --check routes/user.js && node --check middleware/authMiddleware.js && node --check middleware/rateLimiter.js",
+    "test": "echo \"No tests configured yet\""
+  },
+  "keywords": [
+    "express",
+    "api",
+    "anthropic"
+  ],
+  "author": "Piyush Pal",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^4.21.2",
+    "helmet": "^8.1.0",
+    "ioredis": "^5.10.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.12.2",
+    "morgan": "^1.10.1",
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

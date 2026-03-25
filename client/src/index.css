@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-background: 10 10 10;
+  --color-surface: 17 17 17;
+  --color-panel: 26 26 26;
+  --color-text: 241 241 241;
+  --color-muted: 136 136 136;
+  --color-primary: 0 245 255;
+  --color-secondary: 124 58 237;
+  --color-danger: 255 68 68;
+  --color-success: 0 200 150;
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  --color-background: 244 247 251;
+  --color-surface: 255 255 255;
+  --color-panel: 234 239 246;
+  --color-text: 17 24 39;
+  --color-muted: 100 116 139;
+  --color-primary: 0 150 199;
+  --color-secondary: 109 40 217;
+  --color-danger: 220 38 38;
+  --color-success: 5 150 105;
+  color-scheme: light;
+}
+
+@layer base {
+  * {
+    @apply border-white/10;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply min-h-screen bg-background font-body text-foreground antialiased transition-colors duration-500;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(0, 245, 255, 0.08), transparent 22%),
+      radial-gradient(circle at 80% 0%, rgba(124, 58, 237, 0.12), transparent 20%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 24%);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  code,
+  pre {
+    @apply font-display;
+  }
+
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/80 focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
+
+  ::-webkit-scrollbar {
+    width: 9px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-primary/50;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary/70;
+  }
+}
+
+@layer components {
+  .page-shell {
+    @apply relative min-h-screen overflow-x-clip;
+  }
+
+  .section-container {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .page-section {
+    @apply relative py-20 sm:py-24 lg:py-28;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary via-cyan-300 to-secondary bg-clip-text text-transparent;
+  }
+
+  .grid-overlay {
+    @apply bg-grid-fade bg-[length:30px_30px] opacity-20;
+  }
+
+  .panel-outline {
+    @apply border border-primary/20 bg-surface/80 backdrop-blur-xl;
+  }
+
+  .surface-backdrop {
+    @apply bg-surface/75 backdrop-blur-xl;
+  }
+
+  .floating-orb {
+    @apply absolute rounded-full blur-3xl;
+  }
+
+  .section-kicker {
+    @apply mb-4 text-sm uppercase tracking-[0.3em] text-primary/80;
+  }
+}

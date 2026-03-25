@@ -1,0 +1,22 @@
+{
+  "name": "heroicai",
+  "private": true,
+  "version": "1.0.0",
+  "description": "HeroicAI monorepo",
+  "scripts": {
+    "dev:client": "npm --prefix client run dev",
+    "dev:server": "npm --prefix server run dev",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "npm --prefix client run build",
+    "build:server": "npm --prefix server run build",
+    "lint:client": "npm --prefix client run lint"
+  },
+  "keywords": [
+    "saas",
+    "ai",
+    "react",
+    "express"
+  ],
+  "author": "Piyush Pal",
+  "license": "MIT"
+}

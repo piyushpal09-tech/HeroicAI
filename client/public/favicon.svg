@@ -1,0 +1,11 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="128" height="128" rx="32" fill="#0A0A0A"/>
+  <rect x="18" y="18" width="92" height="92" rx="24" fill="#111111" stroke="#00F5FF" stroke-opacity="0.35"/>
+  <path d="M36 78L52 48L64 70L76 40L92 78" stroke="url(#heroicai_favicon_gradient)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="heroicai_favicon_gradient" x1="36" y1="40" x2="92" y2="78" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00F5FF"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+</svg>

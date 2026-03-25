@@ -1,0 +1,12 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0A0A0A"/>
+  <circle cx="172" cy="120" r="140" fill="#00F5FF" fill-opacity="0.14"/>
+  <circle cx="1010" cy="110" r="180" fill="#7C3AED" fill-opacity="0.18"/>
+  <rect x="72" y="84" width="1056" height="462" rx="32" fill="#111111" stroke="rgba(0,245,255,0.24)"/>
+  <text x="120" y="210" fill="#00F5FF" font-family="Fira Code, monospace" font-size="28">HeroicAI</text>
+  <text x="120" y="312" fill="#F1F1F1" font-family="Fira Code, monospace" font-size="72" font-weight="600">Build Smarter</text>
+  <text x="120" y="388" fill="#F1F1F1" font-family="Fira Code, monospace" font-size="72" font-weight="600">with Agentic AI</text>
+  <text x="120" y="456" fill="#888888" font-family="Inter, sans-serif" font-size="30">Premium AI SaaS for code review, content planning, proposals, docs, and startup validation.</text>
+  <rect x="120" y="492" width="264" height="52" rx="26" fill="#111111" stroke="#7C3AED"/>
+  <text x="158" y="525" fill="#F1F1F1" font-family="Inter, sans-serif" font-size="24">Built by Piyush Pal</text>
+</svg>
