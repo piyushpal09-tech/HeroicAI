@@ -10,6 +10,7 @@ import PricingPage from '@/pages/PricingPage.jsx'
 import ContactPage from '@/pages/ContactPage.jsx'
 import LoginPage from '@/pages/LoginPage.jsx'
 import SignupPage from '@/pages/SignupPage.jsx'
+import AuthCallbackPage from '@/pages/AuthCallbackPage.jsx'
 import DashboardPage from '@/pages/DashboardPage.jsx'
 import ToolsPage from '@/pages/ToolsPage.jsx'
 import ToolDetailPage from '@/pages/ToolDetailPage.jsx'
@@ -51,6 +52,7 @@ const App = () => {
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/auth/callback" element={<AuthCallbackPage />} />
           </Route>
 
           <Route

@@ -77,6 +77,32 @@ export const AuthProvider = ({ children }) => {
     return response.data.user
   }, [persistAuth])
 
+  const completeOAuth = useCallback(async (nextToken) => {
+    if (!nextToken) {
+      throw new Error('Missing OAuth token.')
+    }
+
+    setIsLoading(true)
+    setStoredToken(nextToken)
+    setToken(nextToken)
+    setIsAuthenticated(true)
+
+    try {
+      const response = await api.get('/api/auth/me', {
+        headers: {
+          Authorization: `Bearer ${nextToken}`,
+        },
+      })
+      setUser(response.data.user)
+      return response.data.user
+    } catch (error) {
+      clearAuth()
+      throw error
+    } finally {
+      setIsLoading(false)
+    }
+  }, [clearAuth])
+
   const logout = useCallback(async () => {
     try {
       await api.post('/api/auth/logout')
@@ -99,12 +125,13 @@ export const AuthProvider = ({ children }) => {
       isAuthenticated,
       login,
       signup,
+      completeOAuth,
       logout,
       refreshUser,
       setUser,
       injectDemoUser,
     }),
-    [injectDemoUser, isAuthenticated, isLoading, login, logout, refreshUser, signup, token, user],
+    [completeOAuth, injectDemoUser, isAuthenticated, isLoading, login, logout, refreshUser, signup, token, user],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

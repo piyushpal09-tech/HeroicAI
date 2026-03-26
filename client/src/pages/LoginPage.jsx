@@ -17,6 +17,10 @@ const LoginPage = () => {
   const { showToast } = useToast()
   const navigate = useNavigate()
   const location = useLocation()
+  const googleReturnTo = location.state?.from?.pathname || '/dashboard'
+  const googleLoginUrl = new URL('/api/auth/google/start', import.meta.env.VITE_API_URL || window.location.origin)
+
+  googleLoginUrl.searchParams.set('returnTo', googleReturnTo)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -104,13 +108,9 @@ const LoginPage = () => {
             type="button"
             variant="secondary"
             fullWidth
-            onClick={() =>
-              showToast({
-                title: 'Google OAuth',
-                description: 'Connect Google credentials in the backend to enable this button.',
-                variant: 'info',
-              })
-            }
+            onClick={() => {
+              window.location.href = googleLoginUrl.toString()
+            }}
           >
             Continue with Google
           </GlowButton>

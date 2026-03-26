@@ -35,12 +35,14 @@ const findUserById = async (id) => {
   return memoryUsers.get(String(id)) || null
 }
 
-const createUser = async ({ name, email, password, plan = 'free' }) => {
+const createUser = async ({ name, email, password, plan = 'free', authProvider = 'local', googleId = null }) => {
   if (isDatabaseConnected()) {
     const user = new User({
       name,
       email: normalizeEmail(email),
       password,
+      authProvider,
+      googleId,
       plan,
       dailyUsage: {
         count: 0,
@@ -58,6 +60,8 @@ const createUser = async ({ name, email, password, plan = 'free' }) => {
     name,
     email: normalizeEmail(email),
     password,
+    authProvider,
+    googleId,
     plan,
     dailyUsage: {
       count: 0,
@@ -84,6 +88,44 @@ const saveUser = async (user) => {
   const normalizedUser = cloneMemoryUser(user)
   memoryUsers.set(String(normalizedUser._id), normalizedUser)
   return cloneMemoryUser(normalizedUser)
+}
+
+const findOrCreateGoogleUser = async ({ email, name, googleId }) => {
+  const normalizedEmail = normalizeEmail(email)
+  const existingUser = await findUserByEmail(normalizedEmail)
+
+  if (existingUser) {
+    let hasChanges = false
+
+    if (!existingUser.name && name) {
+      existingUser.name = name
+      hasChanges = true
+    }
+
+    if (!existingUser.googleId && googleId) {
+      existingUser.googleId = googleId
+      hasChanges = true
+    }
+
+    if (!existingUser.password && existingUser.authProvider !== 'google') {
+      existingUser.authProvider = 'google'
+      hasChanges = true
+    }
+
+    if (hasChanges) {
+      return saveUser(existingUser)
+    }
+
+    return existingUser
+  }
+
+  return createUser({
+    name: name || normalizedEmail.split('@')[0],
+    email: normalizedEmail,
+    password: null,
+    authProvider: 'google',
+    googleId,
+  })
 }
 
 const checkAndIncrementUsage = async (userId) => {
@@ -136,6 +178,7 @@ module.exports = {
   createUser,
   findUserByEmail,
   findUserById,
+  findOrCreateGoogleUser,
   recordToolHistory,
   saveUser,
 }
