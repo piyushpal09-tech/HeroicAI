@@ -37,18 +37,26 @@ const findUserById = async (id) => {
 
 const createUser = async ({ name, email, password, plan = 'free', authProvider = 'local', googleId = null }) => {
   if (isDatabaseConnected()) {
-    const user = new User({
+    const userPayload = {
       name,
       email: normalizeEmail(email),
-      password,
       authProvider,
-      googleId,
       plan,
       dailyUsage: {
         count: 0,
         resetAt: getNextResetDate(),
       },
-    })
+    }
+
+    if (password) {
+      userPayload.password = password
+    }
+
+    if (googleId) {
+      userPayload.googleId = googleId
+    }
+
+    const user = new User(userPayload)
 
     await user.save()
     return user
@@ -59,9 +67,7 @@ const createUser = async ({ name, email, password, plan = 'free', authProvider =
     _id: id,
     name,
     email: normalizeEmail(email),
-    password,
     authProvider,
-    googleId,
     plan,
     dailyUsage: {
       count: 0,
@@ -69,6 +75,14 @@ const createUser = async ({ name, email, password, plan = 'free', authProvider =
     },
     toolHistory: [],
     createdAt: new Date(),
+  }
+
+  if (password) {
+    user.password = password
+  }
+
+  if (googleId) {
+    user.googleId = googleId
   }
 
   memoryUsers.set(id, user)
